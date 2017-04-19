@@ -2,8 +2,8 @@ import model.Pedido;
 import service.PedidoService;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -51,49 +51,34 @@ public class CrudPedidosServlet extends HttpServlet {
 		Pedido pedido = new Pedido(numeroDaMesa,numeroPedido,status,prioridade,
 									quantidade,valorTotal,garcom,cpf,dataHora);
 		
-		PedidoService ps = new PedidoService();
-		Pedido result= new Pedido();
-		PrintWriter out = response.getWriter();
+		PedidoService ps = new PedidoService();		
+		Pedido result = new Pedido();
 		String oQueFazer = request.getParameter("oQueFazer");
 		
 		switch (oQueFazer){
 		case "Cadastrar": 
 			ps.criar(pedido);
-			out.println("<html><head><title>Cliente Cadastrado</title></head><body>");
-			out.println( "Cadastro realizado: " + pedido.getNumeroPedido());
-			out.println("</body></html>");
+			request.setAttribute("cadastra", pedido);
+			RequestDispatcher view = request.getRequestDispatcher("Cadastrar.jsp");
+			view.forward(request, response);
 		break;
 		case "Consultar": 
 			result = ps.carregar(pedido.getNumeroPedido());
-			out.println("<html><head><title>Cliente Cadastrado</title></head><body>");
-			out.println( "Número da mesa: "+result.getNumeroMesa()+"<br>");
-			out.println( "Número do pedido: "+result.getNumeroPedido()+"<br>");
-			out.println( "Prioridade: "+result.getPrioridade()+"<br>");
-			out.println( "Quantidade: "+result.getQuantidade()+"<br>");
-			out.println( "Valor Total: "+result.getValorTotal()+"<br>");
-			out.println( "Garçom: "+result.getGarcom()+"<br>");
-			out.println( "CPF: "+result.getCpf()+"<br>");
-			out.println( "Data: "+result.getDataHora()+"<br>");
-			out.println( "Status"+result.getStatus()+"<br>");
+			request.setAttribute("consulta", result);
+			RequestDispatcher view1 = request.getRequestDispatcher("Consulta.jsp");
+			view1.forward(request, response);
 		break;
 		case "Remover": 
 			ps.excluir(pedido.getNumeroPedido());
-			out.println("<html><head><title>Cliente Cadastrado</title></head><body>");
-			out.println( "Pedido " + pedido.getNumeroPedido() + " removido com sucesso");
-			out.println("</body></html>");
+			request.setAttribute("remove", pedido);
+			RequestDispatcher view2 = request.getRequestDispatcher("Remover.jsp");
+			view2.forward(request, response);
 		break;
 		case "Atualizar": 
 			ps.atualizar(pedido);
-			out.println("<html><head><title>Cliente Cadastrado</title></head><body>");
-			out.println( "Número da mesa: "+pedido.getNumeroMesa()+"<br>");
-			out.println( "Número do pedido: "+pedido.getNumeroPedido()+"<br>");
-			out.println( "Prioridade: "+pedido.getPrioridade()+"<br>");
-			out.println( "Quantidade: "+pedido.getQuantidade()+"<br>");
-			out.println( "Valor Total: "+pedido.getValorTotal()+"<br>");
-			out.println( "Garçom: "+pedido.getGarcom()+"<br>");
-			out.println( "CPF: "+pedido.getCpf()+"<br>");
-			out.println( "Data: "+pedido.getDataHora()+"<br>");
-			out.println( "Status"+pedido.getStatus()+"<br>");
+			request.setAttribute("atualiza", pedido);
+			RequestDispatcher view3 = request.getRequestDispatcher("Atualiza.jsp");
+			view3.forward(request, response);
 		break;
 		}
 		
